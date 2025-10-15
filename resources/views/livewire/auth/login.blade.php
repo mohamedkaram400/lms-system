@@ -12,6 +12,7 @@ use Laravel\Fortify\Features;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
+use Illuminate\Auth\Events\Registered;
 
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string|email')]
@@ -48,6 +49,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
+        event(new Registered($user));
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
