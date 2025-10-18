@@ -12,4 +12,9 @@ class Lesson extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function lessonProgress() 
+    {
+        return $this->hasOne(LessonProgress::class);
+    }
 }
