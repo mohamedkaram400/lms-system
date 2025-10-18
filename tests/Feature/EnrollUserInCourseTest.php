@@ -2,7 +2,7 @@
 
 use App\Models\User;
 use App\Models\Course;
-use App\Jobs\UserEnrolledInCourse;
+use App\Jobs\UserEnrolledInCourseJob;
 use Illuminate\Support\Facades\Queue;
 
 it('enrolls a user in a course successfully', function () {
@@ -26,7 +26,7 @@ it('enrolls a user in a course successfully', function () {
         'course_id' => $course->id,
     ]);
 
-    Queue::assertPushed(UserEnrolledInCourse::class);
+    Queue::assertPushed(UserEnrolledInCourseJob::class);
 });
 
 it('does not enroll if course is unpublished', function () { 
@@ -57,7 +57,7 @@ it('does not enroll if user already enrolled', function () {
     // Second attempt
     $response = $this->actingAs($user)->postJson(route('enroll-course', ['course_id' => $course->id]));
 
-    Queue::assertPushed(UserEnrolledInCourse::class, function ($job) use ($user, $course) {
+    Queue::assertPushed(UserEnrolledInCourseJob::class, function ($job) use ($user, $course) {
         return $job->userId === $user->id && $job->courseId === $course->id;
     });
     $response->assertStatus(409);

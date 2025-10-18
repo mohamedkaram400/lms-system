@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
-use App\Jobs\UserEnrolledInCourse;
+use App\Jobs\UserEnrolledInCourseJob;
 use Illuminate\Support\Facades\Auth;
 use App\Actions\EnrollUserInCourseAction;
 
@@ -29,7 +29,7 @@ class EnrollUserInCourse extends Controller
             }
 
             // Dispatch the job after creating new enrollment
-            UserEnrolledInCourse::dispatch($user->id, $course->id);
+            UserEnrolledInCourseJob::dispatch($user->id, $course->id);
 
             // Return response after enrollment
             return response()->json(['message' => 'Enrolled successfully', 'course' => $course], 201);

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UserEnrolledInCourse implements ShouldQueue
+class UserEnrolledInCourseJob implements ShouldQueue
 {
     use Queueable;
 
