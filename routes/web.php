@@ -2,9 +2,10 @@
 
 use Livewire\Volt\Volt;
 use Laravel\Fortify\Features;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MarkLessonStarted;
 use App\Http\Controllers\EnrollUserInCourse;
+
 
 Route::get('/home', function () {
     return view('welcome');
@@ -35,6 +36,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Enroll user course
     Route::post('enroll-course/{course_id}', EnrollUserInCourse::class)->name('enroll-course');
+
+    // Start lesson
+    Route::post('/start-lesson/{lesson_id}', MarkLessonStarted::class);
+
+
+
+
+
+
+
 
     // Route::get('/test-mail', function () {
     //     Mail::raw('This is a test message from Laravel to Mailtrap 🎯', function ($message) {
