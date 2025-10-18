@@ -5,7 +5,7 @@ use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MarkLessonStarted;
 use App\Http\Controllers\EnrollUserInCourse;
-
+use App\Http\Controllers\UpdateLessonProgress;
 
 Route::get('/home', function () {
     return view('welcome');
@@ -38,9 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('enroll-course/{course_id}', EnrollUserInCourse::class)->name('enroll-course');
 
     // Start lesson
-    Route::post('/start-lesson/{lesson_id}', MarkLessonStarted::class);
+    Route::post('/start-lesson/{lesson_id}', MarkLessonStarted::class)->name('start-lesson');
 
-
+    // Update watch seconds for played lesson
+    Route::post('/lesson/{lesson}/progress', UpdateLessonProgress::class)->name('update-lesson-progress');
 
 
 
