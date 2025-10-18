@@ -4,6 +4,7 @@ use Livewire\Volt\Volt;
 use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EnrollUserInCourse;
 
 Route::get('/home', function () {
     return view('welcome');
@@ -31,31 +32,18 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 
-Route::get('/test-mail', function () {
-    Mail::raw('This is a test message from Laravel to Mailtrap 🎯', function ($message) {
-        $message->to('your_email@mailtrap.io')
-                ->subject('Test Email from Laravel');
-    });
 
-    return '✅ Test email sent (check your Mailtrap inbox)';
-});
-        // Route::get('level', 'settings.appearance')->name('appearance.edit');
-        // Route::get('course', 'settings.appearance')->name('appearance.edit');
+    // Enroll user course
+    Route::post('enroll-course/{course_id}', EnrollUserInCourse::class)->name('enroll-course');
 
-    // Level Routes
-    // Route::controller(LevelController)->group(function () {
+    // Route::get('/test-mail', function () {
+    //     Mail::raw('This is a test message from Laravel to Mailtrap 🎯', function ($message) {
+    //         $message->to('your_email@mailtrap.io')
+    //                 ->subject('Test Email from Laravel');
+    //     });
 
+    //     return '✅ Test email sent (check your Mailtrap inbox)';
     // });
-    
-    // Course Routes
-
-    // Lesson Routes
-
-    // Enrollment Routes 
-
-    // LessonProgress Routes
-
-    // CourseCompletion Routes
 
 });
 

@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\User;
+use App\Models\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -9,16 +11,20 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WelcomeMail extends Mailable implements ShouldQueue
+class EnrolledInCourseMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public User $user;
+    public Course $course;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(User $user, Course $course)
     {
-        //
+        $this->user = $user;
+        $this->course = $course;
     }
 
     /**
@@ -27,7 +33,7 @@ class WelcomeMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome Mail',
+            subject: 'Enrolled In Course Mail',
         );
     }
 
@@ -37,7 +43,11 @@ class WelcomeMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.welcome',
+            view: 'emails.enroll',
+            with: [
+                'user' => $this->user,
+                'course' => $this->course,
+            ],
         );
     }
 
