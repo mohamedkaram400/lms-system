@@ -5,8 +5,18 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Enrollment;
 
+beforeEach(function () {
+    $this->adminUser = User::where('email', 'admin@gmail.com')->first();
+
+    if (!$this->adminUser) {
+        $this->adminUser = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+        ]);
+    }
+});
+
 it('mark lessone started successfully', function () {
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => true,
     ]);
@@ -15,11 +25,11 @@ it('mark lessone started successfully', function () {
     ]);
 
     Enrollment::factory()->create([
-        'user_id'       => $user->id, 
+        'user_id'       => $this->adminUser->id, 
         'course_id'     => $course->id
     ]);
     
-    $response = $this->actingAs($user)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
 
     // dd($response);
     $response->assertStatus(200);
@@ -29,7 +39,6 @@ it('mark lessone started successfully', function () {
 
 it('does not enroll if course is unpublished', function () { 
 
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => false,
     ]);
@@ -37,7 +46,7 @@ it('does not enroll if course is unpublished', function () {
         'course_id' => $course->id,
     ]);
 
-    $response = $this->actingAs($user)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
 
     $response->assertStatus(400);
     $response->assertJson(['message' => 'Course is not published']);
@@ -45,7 +54,6 @@ it('does not enroll if course is unpublished', function () {
 
 
 it('this course not enrolled', function () {
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => true,
     ]);
@@ -53,7 +61,7 @@ it('this course not enrolled', function () {
         'course_id' => $course->id,
     ]);
 
-    $response = $this->actingAs($user)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
 
     // dd($response);
 

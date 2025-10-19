@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,12 +25,12 @@ class CourseFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title),
             'level' => $this->faker->randomElement(['beginner', 'intermediate', 'advanced']),
-            'category_id' => Category::factory()->create()->id,
+            'category_id' => Category::factory()->create(),
+            'created_by' => User::factory(), 
             'price' => $this->faker->numberBetween(50, 500),
             'is_published' => $this->faker->boolean(),
             'language' => $this->faker->randomElement(['en', 'ar', 'fr']),
             'duration' => $this->faker->numberBetween(30, 300), // minutes
-            'created_by' => 1, 
             'description' => $this->faker->paragraphs(3, true),
             'short_description' => $this->faker->sentences(2, true),
         ];

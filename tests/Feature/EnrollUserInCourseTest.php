@@ -5,16 +5,26 @@ use App\Models\Course;
 use App\Jobs\UserEnrolledInCourseJob;
 use Illuminate\Support\Facades\Queue;
 
+beforeEach(function () {
+    $this->adminUser = User::where('email', 'admin@gmail.com')->first();
+
+    if (!$this->adminUser) {
+        $this->adminUser = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+        ]);
+    }
+});
+
 it('enrolls a user in a course successfully', function () {
     Queue::fake(); // prevent actual job from running
 
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => true,
     ]);
 
     // Send request to your enroll route
-    $response = $this->actingAs($user)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
 
     // dd($response);
 
@@ -22,7 +32,7 @@ it('enrolls a user in a course successfully', function () {
     $response->assertJson(['message' => 'Enrolled successfully']);
 
     $this->assertDatabaseHas('enrollments', [
-        'user_id' => $user->id,
+        'user_id' => $this->adminUser->id,
         'course_id' => $course->id,
     ]);
 
@@ -32,12 +42,11 @@ it('enrolls a user in a course successfully', function () {
 it('does not enroll if course is unpublished', function () { 
     Queue::fake(); // prevent actual job from running
 
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => false,
     ]);
 
-    $response = $this->actingAs($user)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
 
     $response->assertStatus(400);
     $response->assertJson(['message' => 'Course is not published']);
@@ -46,19 +55,18 @@ it('does not enroll if course is unpublished', function () {
 it('does not enroll if user already enrolled', function () { 
     Queue::fake(); // prevent actual job from running
 
-    $user = User::factory()->create();
     $course = Course::factory()->create([
         'is_published' => true,
     ]);
 
     // First enrollment
-    $this->actingAs($user)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
 
     // Second attempt
-    $response = $this->actingAs($user)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
 
-    Queue::assertPushed(UserEnrolledInCourseJob::class, function ($job) use ($user, $course) {
-        return $job->userId === $user->id && $job->courseId === $course->id;
+    Queue::assertPushed(UserEnrolledInCourseJob::class, function ($job) use ($course) {
+        return $job->userId === $this->adminUser->id && $job->courseId === $course->id;
     });
     $response->assertStatus(409);
     $response->assertJson(['message' => 'You are already enrolled.']);
