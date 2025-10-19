@@ -36,16 +36,14 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Enroll user course
-    Route::post('enroll-course/{course_id}', EnrollUserInCourse::class)->name('enroll-course');
+    Route::post('enroll-course/{course}', EnrollUserInCourse::class)->name('enroll-course');
 
     // Start lesson
-    Route::post('/start-lesson/{lesson_id}', MarkLessonStarted::class)->name('start-lesson');
+    Route::post('/start-lesson/{lesson}', MarkLessonStarted::class)->name('start-lesson');
 
     // Update watch seconds for played lesson
     Route::post('/lesson/{lesson}/progress', UpdateLessonProgress::class)->name('update-lesson-progress');
 
-    // Mark lesson as completed 
-    Route::post('/mark-lesson-completed/{lesson_id}', MarkLessonCompleted::class)->name('mark-lessone-complted');
 
 
 

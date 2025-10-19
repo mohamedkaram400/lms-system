@@ -13,13 +13,10 @@ class EnrollUserInCourse extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, EnrollUserInCourseAction $action)
+    public function __invoke(Request $request, Course $course, EnrollUserInCourseAction $action)
     {
         // Get auth user
         $user = Auth::user();
-
-        // Get the selected course
-        $course = Course::findOrFail($request->course_id);
 
         try {
             // Excute the action class for this enrollment

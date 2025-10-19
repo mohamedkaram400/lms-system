@@ -12,13 +12,10 @@ class MarkLessonStarted extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, MarkLessonStartedAction $action)
+    public function __invoke(Request $request, Lesson $lesson, MarkLessonStartedAction $action)
     {
         // Get auth user
         $user = Auth::user();
-
-        // Get the selected lesson
-        $lesson = Lesson::findOrFail($request->lesson_id);
 
         try {
             // Excute the action class for this enrollment

@@ -11,14 +11,11 @@ class UpdateLessonProgress extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, UpdateLessonProgressAction $action)
+    public function __invoke(Request $request, Lesson $lesson, UpdateLessonProgressAction $action)
     {
         $data = $request->validate([
             'watch_seconds' => 'required|integer|min:0',
         ]);
-
-        // Get the selected lesson
-        $lesson = Lesson::findOrFail($request->lesson_id);
 
         try {
             // Excute the action class for this enrollment

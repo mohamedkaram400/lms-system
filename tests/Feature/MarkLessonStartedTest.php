@@ -29,7 +29,7 @@ it('mark lessone started successfully', function () {
         'course_id'     => $course->id
     ]);
     
-    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 
     // dd($response);
     $response->assertStatus(200);
@@ -46,7 +46,7 @@ it('does not enroll if course is unpublished', function () {
         'course_id' => $course->id,
     ]);
 
-    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 
     $response->assertStatus(400);
     $response->assertJson(['message' => 'Course is not published']);
@@ -61,7 +61,7 @@ it('this course not enrolled', function () {
         'course_id' => $course->id,
     ]);
 
-    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson_id' => $lesson->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 
     // dd($response);
 

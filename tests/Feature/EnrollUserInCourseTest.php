@@ -24,7 +24,7 @@ it('enrolls a user in a course successfully', function () {
     ]);
 
     // Send request to your enroll route
-    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course' => $course->id]));
 
     // dd($response);
 
@@ -46,7 +46,7 @@ it('does not enroll if course is unpublished', function () {
         'is_published' => false,
     ]);
 
-    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course' => $course->id]));
 
     $response->assertStatus(400);
     $response->assertJson(['message' => 'Course is not published']);
@@ -60,10 +60,10 @@ it('does not enroll if user already enrolled', function () {
     ]);
 
     // First enrollment
-    $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course' => $course->id]));
 
     // Second attempt
-    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course_id' => $course->id]));
+    $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course' => $course->id]));
 
     Queue::assertPushed(UserEnrolledInCourseJob::class, function ($job) use ($course) {
         return $job->userId === $this->adminUser->id && $job->courseId === $course->id;

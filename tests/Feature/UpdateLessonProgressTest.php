@@ -37,7 +37,7 @@ it('updates lesson progress successfully when the user is enrolled', function ()
     ]);
 
     $response = $this->actingAs($this->admin)->postJson(
-        route('update-lesson-progress', ['lesson_id' => $lesson->id]),
+        route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
 
@@ -62,7 +62,7 @@ it('fails to update lesson progress when the user is not enrolled', function () 
     ]);
 
     $response = $this->actingAs($this->admin)->postJson(
-        route('update-lesson-progress', ['lesson_id' => $lesson->id]),
+        route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
 
@@ -82,7 +82,7 @@ it('returns 400 when the course is unpublished', function () {
     ]);
 
     $response = $this->actingAs($this->admin)->postJson(
-        route('update-lesson-progress', ['lesson_id' => $lesson->id]),
+        route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
 
@@ -104,7 +104,7 @@ it('fails to update lesson progress when the lesson has not been started', funct
     ]);
 
     $response = $this->actingAs($this->admin)->postJson(
-        route('update-lesson-progress', ['lesson_id' => $lesson->id]),
+        route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
 
