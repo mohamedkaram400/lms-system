@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CourseCompletion extends Model
 {
-    protected $fillable = ['user_id', 'course_id', 'complted_at'];
+    use HasFactory;
+    
+    protected $fillable = ['user_id', 'course_id', 'completed_at'];
 
     public function user() 
     {

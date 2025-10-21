@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     // Update watch seconds for played lesson
     Route::post('/lesson/{lesson}/progress', UpdateLessonProgress::class)->name('update-lesson-progress');
 
+    // Mark lesson as completed 
+    Route::post('/mark-lesson-completed/{lesson}', MarkLessonCompleted::class)->name('mark-lessone-complted');
 
 
 
