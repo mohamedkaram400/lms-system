@@ -68,8 +68,8 @@ it('fails to update lesson progress when the user is not enrolled', function () 
 
     // dd($response);
 
-    $response->assertStatus(409)
-        ->assertJson(['message' => 'This course not enrolled.']);
+    $response->assertStatus(400)
+        ->assertJson(['message' => 'User not enrolled in this course.']);
 });
 
 it('returns 400 when the course is unpublished', function () {

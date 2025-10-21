@@ -18,13 +18,8 @@ class MarkLessonStarted extends Controller
         $user = Auth::user();
 
         try {
-            // Excute the action class for this enrollment
-            $enrolled = $action($user, $lesson);
-            if (!$enrolled) {
-                return response()->json(['message' => 'This course not enrolled.'], 409);
-            }
+            $action($user, $lesson);
 
-            // Return response after enrollment
             return response()->json(['message' => 'Lesson started successfully', 'lesson' => $lesson], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);

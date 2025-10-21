@@ -65,6 +65,6 @@ it('this course not enrolled', function () {
 
     // dd($response);
 
-    $response->assertStatus(409);
-    $response->assertJson(['message' => 'This course not enrolled.']);
+    $response->assertStatus(400);
+    $response->assertJson(['message' => 'User not enrolled in this course.']);
 });

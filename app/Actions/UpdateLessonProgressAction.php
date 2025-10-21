@@ -3,27 +3,17 @@
 namespace App\Actions;
 
 use App\Models\Lesson;
-use App\Models\Enrollment;
 use App\Models\LessonProgress;
 use Illuminate\Support\Facades\Auth;
+use App\Validators\CourseAccessValidator;
 
 class UpdateLessonProgressAction
 {
+    public function __construct(private CourseAccessValidator $validator) {}
+    
     public function __invoke($data, Lesson $lesson)
     {
-        $course = $lesson->course;
-
-        if (!$course->is_published) {
-            throw new \Exception('Course is not published');
-        }
-
-        $isEnrolled = Enrollment::where('course_id', $course->id)
-            ->where('user_id', Auth::id())
-            ->exists();
-
-        if (!$isEnrolled) {
-            return false;
-        }
+        $this->validator->validate(Auth::user(), $lesson->course);
 
         $progress = LessonProgress::where('lesson_id', $lesson->id)
             ->where('user_id', Auth::id())

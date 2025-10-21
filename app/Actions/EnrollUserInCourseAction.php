@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\UserEnrolledInCourseJob;
 
 class EnrollUserInCourseAction
 {
@@ -15,14 +16,15 @@ class EnrollUserInCourseAction
             throw new \Exception('Course is not published');
         }
 
-        $already = Enrollment::where('course_id', $course->id)
+        // ✅ Check if already enrolled
+        $alreadyEnrolled = Enrollment::where('course_id', $course->id)
             ->where('user_id', $user->id)
             ->exists();
 
-        if ($already) {
-            return false;
+        if ($alreadyEnrolled) {
+            throw new \Exception('User already enrolled in this course.');
         }
-
+        
         DB::transaction(function () use ($user, $course) {
             Enrollment::create([
                 'course_id' => $course->id,
@@ -30,6 +32,10 @@ class EnrollUserInCourseAction
                 'enrolled_at' => now(),
             ]);
         });
+
+
+        // Dispatch the job after creating new enrollment
+        UserEnrolledInCourseJob::dispatch($user->id, $course->id);
 
         return true;
     }

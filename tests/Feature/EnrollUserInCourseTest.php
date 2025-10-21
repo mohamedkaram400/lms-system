@@ -65,9 +65,8 @@ it('does not enroll if user already enrolled', function () {
     // Second attempt
     $response = $this->actingAs($this->adminUser)->postJson(route('enroll-course', ['course' => $course->id]));
 
-    Queue::assertPushed(UserEnrolledInCourseJob::class, function ($job) use ($course) {
-        return $job->userId === $this->adminUser->id && $job->courseId === $course->id;
-    });
-    $response->assertStatus(409);
-    $response->assertJson(['message' => 'You are already enrolled.']);
+    // dd($response);
+
+    $response->assertStatus(400);
+    $response->assertJson(['message' => 'User already enrolled in this course.']);
 });
