@@ -1,9 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\Course;
-use App\Models\Lesson;
-use App\Models\Enrollment;
 
 beforeEach(function () {
     $this->adminUser = User::where('email', 'admin@gmail.com')->first();
@@ -17,17 +14,10 @@ beforeEach(function () {
 });
 
 it('mark lessone started successfully', function () {
-    $course = Course::factory()->create([
-        'is_published' => true,
-    ]);
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id,
-    ]);
 
-    Enrollment::factory()->create([
-        'user_id'       => $this->adminUser->id, 
-        'course_id'     => $course->id
-    ]);
+    [$course, $lesson] = createPublishedCourseWithLesson(true);
+
+    enrollUserInCourse($this->adminUser, $course);
     
     $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 
@@ -39,12 +29,7 @@ it('mark lessone started successfully', function () {
 
 it('does not enroll if course is unpublished', function () { 
 
-    $course = Course::factory()->create([
-        'is_published' => false,
-    ]);
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id,
-    ]);
+    [$course, $lesson] = createPublishedCourseWithLesson(false);
 
     $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 
@@ -54,12 +39,8 @@ it('does not enroll if course is unpublished', function () {
 
 
 it('this course not enrolled', function () {
-    $course = Course::factory()->create([
-        'is_published' => true,
-    ]);
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id,
-    ]);
+
+    [$course, $lesson] = createPublishedCourseWithLesson(true);
 
     $response = $this->actingAs($this->adminUser)->postJson(route('start-lesson', ['lesson' => $lesson->id]));
 

@@ -16,7 +16,7 @@ class MarkLessonCompleted extends Controller
     {
         // Get auth user
         $user = Auth::user();
-
+ 
         try {
             $action($user, $lesson);
 

@@ -1,16 +1,13 @@
 <?php
 
 use App\Models\User;
-use App\Models\Course;
-use App\Models\Lesson;
-use App\Models\Enrollment;
 use App\Models\LessonProgress;
 
 beforeEach(function () {
-    $this->admin = User::where('email', 'admin@gmail.com')->first();
+    $this->adminUser = User::where('email', 'admin@gmail.com')->first();
 
-    if (!$this->admin) {
-        $this->admin = User::factory()->create([
+    if (!$this->adminUser) {
+        $this->adminUser = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
         ]);
@@ -19,24 +16,17 @@ beforeEach(function () {
 
 it('updates lesson progress successfully when the user is enrolled', function () {
 
-    $course = Course::factory()->create(['is_published' => true]);
+    [$course, $lesson] = createPublishedCourseWithLesson(true);
 
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id
-    ]);
-
-    Enrollment::factory()->create([
-        'course_id' => $course->id,
-        'user_id' => $this->admin->id,
-    ]);
+    enrollUserInCourse($this->adminUser, $course);
 
     LessonProgress::factory()->create([
         'lesson_id' => $lesson->id,
-        'user_id' => $this->admin->id,
+        'user_id' => $this->adminUser->id,
         'watch_seconds' => 0
     ]);
 
-    $response = $this->actingAs($this->admin)->postJson(
+    $response = $this->actingAs($this->adminUser)->postJson(
         route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
@@ -49,19 +39,16 @@ it('updates lesson progress successfully when the user is enrolled', function ()
 
 it('fails to update lesson progress when the user is not enrolled', function () {
 
-    $course = Course::factory()->create(['is_published' => true]);
+    [$course, $lesson] = createPublishedCourseWithLesson(true);
 
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id
-    ]);
 
     LessonProgress::factory()->create([
         'lesson_id' => $lesson->id,
-        'user_id' => $this->admin->id,
+        'user_id' => $this->adminUser->id,
         'watch_seconds' => 0
     ]);
 
-    $response = $this->actingAs($this->admin)->postJson(
+    $response = $this->actingAs($this->adminUser)->postJson(
         route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
@@ -74,14 +61,9 @@ it('fails to update lesson progress when the user is not enrolled', function () 
 
 it('returns 400 when the course is unpublished', function () {
 
-    $course = Course::factory()->create([
-        'is_published' => false,
-    ]);
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id,
-    ]);
+    [$course, $lesson] = createPublishedCourseWithLesson(false);
 
-    $response = $this->actingAs($this->admin)->postJson(
+    $response = $this->actingAs($this->adminUser)->postJson(
         route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );
@@ -92,18 +74,11 @@ it('returns 400 when the course is unpublished', function () {
 
 it('fails to update lesson progress when the lesson has not been started', function () {
 
-    $course = Course::factory()->create(['is_published' => true]);
+    [$course, $lesson] = createPublishedCourseWithLesson(true);
 
-    $lesson = Lesson::factory()->create([
-        'course_id' => $course->id
-    ]);
+    enrollUserInCourse($this->adminUser, $course);
 
-    Enrollment::factory()->create([
-        'course_id' => $course->id,
-        'user_id' => $this->admin->id,
-    ]);
-
-    $response = $this->actingAs($this->admin)->postJson(
+    $response = $this->actingAs($this->adminUser)->postJson(
         route('update-lesson-progress', ['lesson' => $lesson->id]),
         ['watch_seconds' => 50]
     );

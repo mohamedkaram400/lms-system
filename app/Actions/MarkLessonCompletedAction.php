@@ -21,7 +21,7 @@ class MarkLessonCompletedAction
 
         // ✅ Mark this lesson as completed
         LessonProgress::updateOrCreate(
-            [
+            [ 
                 'lesson_id' => $lesson->id,
                 'user_id'   => $user->id,
             ],
