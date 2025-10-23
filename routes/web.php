@@ -7,6 +7,7 @@ use App\Http\Controllers\MarkLessonStarted;
 use App\Http\Controllers\EnrollUserInCourse;
 use App\Http\Controllers\MarkLessonCompleted;
 use App\Http\Controllers\UpdateLessonProgress;
+use App\Http\Controllers\CourseProgressPercentage;
 
 Route::get('/home', function () {
     return view('welcome');
@@ -47,8 +48,8 @@ Route::middleware(['auth'])->group(function () {
     // Mark lesson as completed 
     Route::post('/mark-lesson-completed/{lesson}', MarkLessonCompleted::class)->name('mark-lessone-complted');
 
-
-
+    // Course Progress Percentage
+    Route::post('/progress-percentage/{course}', CourseProgressPercentage::class)->name('progress-percentage');
 
 
 

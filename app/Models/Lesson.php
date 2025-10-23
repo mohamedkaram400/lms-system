@@ -16,8 +16,8 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function lessonProgress() 
+    public function progresses()
     {
-        return $this->hasOne(LessonProgress::class);
+        return $this->hasMany(LessonProgress::class);
     }
 }
