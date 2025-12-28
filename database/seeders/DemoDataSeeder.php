@@ -19,12 +19,16 @@ class DemoDataSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
         ]);
 
         $user = User::factory()->create([
             'name' => 'John Student',
             'email' => 'student@example.com',
             'password' => Hash::make('password'),
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
         ]);
 
         // Create course and lessons
